@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/170an1/Projects/AutoCompany/VehicleService/VehicleService.API/VehicleService.API.csproj": {}
+    "/Users/170an1/Projects/VehicleEmporium/VehicleService/VehicleService.API/VehicleService.API.csproj": {}
   },
   "projects": {
-    "/Users/170an1/Projects/AutoCompany/VehicleService/VehicleService.API/VehicleService.API.csproj": {
+    "/Users/170an1/Projects/VehicleEmporium/VehicleService/VehicleService.API/VehicleService.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/170an1/Projects/AutoCompany/VehicleService/VehicleService.API/VehicleService.API.csproj",
+        "projectUniqueName": "/Users/170an1/Projects/VehicleEmporium/VehicleService/VehicleService.API/VehicleService.API.csproj",
         "projectName": "VehicleService.API",
-        "projectPath": "/Users/170an1/Projects/AutoCompany/VehicleService/VehicleService.API/VehicleService.API.csproj",
+        "projectPath": "/Users/170an1/Projects/VehicleEmporium/VehicleService/VehicleService.API/VehicleService.API.csproj",
         "packagesPath": "/Users/170an1/.nuget/packages/",
-        "outputPath": "/Users/170an1/Projects/AutoCompany/VehicleService/VehicleService.API/obj/",
+        "outputPath": "/Users/170an1/Projects/VehicleEmporium/VehicleService/VehicleService.API/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/170an1/.nuget/NuGet/NuGet.Config"

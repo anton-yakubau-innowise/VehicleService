@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/170an1/Projects/AutoCompany/VehicleService/VehicleService.Infrastructure/VehicleService.Infrastructure.csproj": {}
+    "/Users/170an1/Projects/VehicleEmporium/VehicleService/VehicleService.Infrastructure/VehicleService.Infrastructure.csproj": {}
   },
   "projects": {
-    "/Users/170an1/Projects/AutoCompany/VehicleService/VehicleService.Infrastructure/VehicleService.Infrastructure.csproj": {
+    "/Users/170an1/Projects/VehicleEmporium/VehicleService/VehicleService.Infrastructure/VehicleService.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/170an1/Projects/AutoCompany/VehicleService/VehicleService.Infrastructure/VehicleService.Infrastructure.csproj",
+        "projectUniqueName": "/Users/170an1/Projects/VehicleEmporium/VehicleService/VehicleService.Infrastructure/VehicleService.Infrastructure.csproj",
         "projectName": "VehicleService.Infrastructure",
-        "projectPath": "/Users/170an1/Projects/AutoCompany/VehicleService/VehicleService.Infrastructure/VehicleService.Infrastructure.csproj",
+        "projectPath": "/Users/170an1/Projects/VehicleEmporium/VehicleService/VehicleService.Infrastructure/VehicleService.Infrastructure.csproj",
         "packagesPath": "/Users/170an1/.nuget/packages/",
-        "outputPath": "/Users/170an1/Projects/AutoCompany/VehicleService/VehicleService.Infrastructure/obj/",
+        "outputPath": "/Users/170an1/Projects/VehicleEmporium/VehicleService/VehicleService.Infrastructure/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/170an1/.nuget/NuGet/NuGet.Config"

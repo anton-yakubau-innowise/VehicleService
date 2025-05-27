@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/170an1/Projects/AutoCompany/VehicleService/VehicleService.Application/VehicleService.Application.csproj",
+      "projectUniqueName": "/Users/170an1/Projects/VehicleEmporium/VehicleService/VehicleService.Application/VehicleService.Application.csproj",
       "projectName": "VehicleService.Application",
-      "projectPath": "/Users/170an1/Projects/AutoCompany/VehicleService/VehicleService.Application/VehicleService.Application.csproj",
+      "projectPath": "/Users/170an1/Projects/VehicleEmporium/VehicleService/VehicleService.Application/VehicleService.Application.csproj",
       "packagesPath": "/Users/170an1/.nuget/packages/",
-      "outputPath": "/Users/170an1/Projects/AutoCompany/VehicleService/VehicleService.Application/obj/",
+      "outputPath": "/Users/170an1/Projects/VehicleEmporium/VehicleService/VehicleService.Application/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/170an1/.nuget/NuGet/NuGet.Config"
