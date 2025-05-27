@@ -21,6 +21,7 @@ namespace VehicleService.Domain.Entities
         public Money BasePrice { get; private set; }
         public VehicleStatus Status { get; private set; }
         public DateTime CreatedAt { get; private set; }
+        public DateTime UpdatedAt { get; private set; }
         private Vehicle()
         {
             Vin = string.Empty;
@@ -72,6 +73,7 @@ namespace VehicleService.Domain.Entities
 
             Status = VehicleStatus.Available;
             CreatedAt = DateTime.UtcNow;
+            UpdatedAt = CreatedAt;
         }
 
         public static Vehicle RegisterNew(
