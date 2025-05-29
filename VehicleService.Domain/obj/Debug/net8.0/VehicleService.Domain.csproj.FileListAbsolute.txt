@@ -1,0 +1,12 @@
+/Users/170an1/Projects/AutomotiveGroup/VehicleService/VehicleService.Domain/bin/Debug/net8.0/VehicleService.Domain.deps.json
+/Users/170an1/Projects/AutomotiveGroup/VehicleService/VehicleService.Domain/bin/Debug/net8.0/VehicleService.Domain.dll
+/Users/170an1/Projects/AutomotiveGroup/VehicleService/VehicleService.Domain/bin/Debug/net8.0/VehicleService.Domain.pdb
+/Users/170an1/Projects/AutomotiveGroup/VehicleService/VehicleService.Domain/obj/Debug/net8.0/VehicleService.Domain.GeneratedMSBuildEditorConfig.editorconfig
+/Users/170an1/Projects/AutomotiveGroup/VehicleService/VehicleService.Domain/obj/Debug/net8.0/VehicleService.Domain.AssemblyInfoInputs.cache
+/Users/170an1/Projects/AutomotiveGroup/VehicleService/VehicleService.Domain/obj/Debug/net8.0/VehicleService.Domain.AssemblyInfo.cs
+/Users/170an1/Projects/AutomotiveGroup/VehicleService/VehicleService.Domain/obj/Debug/net8.0/VehicleService.Domain.csproj.CoreCompileInputs.cache
+/Users/170an1/Projects/AutomotiveGroup/VehicleService/VehicleService.Domain/obj/Debug/net8.0/VehicleService.Domain.sourcelink.json
+/Users/170an1/Projects/AutomotiveGroup/VehicleService/VehicleService.Domain/obj/Debug/net8.0/VehicleService.Domain.dll
+/Users/170an1/Projects/AutomotiveGroup/VehicleService/VehicleService.Domain/obj/Debug/net8.0/refint/VehicleService.Domain.dll
+/Users/170an1/Projects/AutomotiveGroup/VehicleService/VehicleService.Domain/obj/Debug/net8.0/VehicleService.Domain.pdb
+/Users/170an1/Projects/AutomotiveGroup/VehicleService/VehicleService.Domain/obj/Debug/net8.0/ref/VehicleService.Domain.dll
