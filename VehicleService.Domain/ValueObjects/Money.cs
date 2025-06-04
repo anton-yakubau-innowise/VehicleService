@@ -9,6 +9,12 @@ namespace VehicleService.Domain.ValueObjects
         public decimal Amount { get; }
         public string Currency { get; }
 
+        private Money()
+        {
+            Amount = 0;
+            Currency = string.Empty;
+        }
+
         public Money(decimal amount, string currency)
         {
             Guard.AgainstNegative(amount);
