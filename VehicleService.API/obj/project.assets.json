@@ -1075,6 +1075,9 @@
       "VehicleService.Application/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "VehicleService.Domain": "1.0.0"
+        },
         "compile": {
           "bin/placeholder/VehicleService.Application.dll": {}
         },

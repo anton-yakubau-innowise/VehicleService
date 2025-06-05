@@ -26,7 +26,11 @@
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
-            "projectReferences": {}
+            "projectReferences": {
+              "/Users/170an1/Projects/AutomotiveGroup/VehicleService/VehicleService.Domain/VehicleService.Domain.csproj": {
+                "projectPath": "/Users/170an1/Projects/AutomotiveGroup/VehicleService/VehicleService.Domain/VehicleService.Domain.csproj"
+              }
+            }
           }
         },
         "warningProperties": {

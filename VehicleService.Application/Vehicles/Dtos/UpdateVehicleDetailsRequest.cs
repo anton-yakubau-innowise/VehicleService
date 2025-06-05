@@ -1,0 +1,15 @@
+using VehicleService.Domain.Enums;
+
+namespace VehicleService.Application.Vehicles.Dtos
+{
+    public record UpdateVehicleDetailsRequest(
+        string Manufacturer,
+        string Model,
+        string Package,
+        string BodyType,
+        int Year,
+        string Color,
+        EngineType EngineType,
+        TransmissionType TransmissionType
+    );
+}
