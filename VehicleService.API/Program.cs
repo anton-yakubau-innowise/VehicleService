@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using VehicleService.Application;
+using VehicleService.Infrastructure;
 using VehicleService.Infrastructure.Persistence;
 
 
@@ -6,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
+builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddApplicationServices();   
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -27,7 +31,6 @@ if (app.Environment.IsDevelopment())
     }
 }
 
-app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
