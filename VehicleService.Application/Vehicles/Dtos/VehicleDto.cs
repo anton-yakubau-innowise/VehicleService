@@ -1,5 +1,3 @@
-using System;
-
 namespace VehicleService.Application.Vehicles.Dtos
 {
     public record VehicleDto(

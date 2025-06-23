@@ -8,7 +8,7 @@ using VehicleService.Infrastructure.Persistence.Repositories;
 
 namespace VehicleService.Infrastructure;
 
-public static class DependencyInjection
+public static class InfrastructureServiceExtensions
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {

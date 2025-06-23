@@ -1,4 +1,3 @@
-using System;
 using VehicleService.Domain.Common;
 
 namespace VehicleService.Domain.Entities

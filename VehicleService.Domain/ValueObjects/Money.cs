@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using VehicleService.Domain.Common;
 
 namespace VehicleService.Domain.ValueObjects

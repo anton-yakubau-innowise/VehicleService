@@ -1,48 +1,36 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using VehicleService.Application.Interfaces;
 using VehicleService.Application.Vehicles.Dtos;
 using VehicleService.Domain.Entities;
-using VehicleService.Domain.Repositories;
 using VehicleService.Domain.ValueObjects;
 using VehicleService.Domain.Enums;
+using AutoMapper;
 
 namespace VehicleService.Application.Services
 {
-    public class VehicleApplicationService : IVehicleApplicationService
+    public class VehicleApplicationService(IUnitOfWork unitOfWork, IMapper mapper) : IVehicleApplicationService
     {
-        private readonly IUnitOfWork _unitOfWork;
-
-        public VehicleApplicationService(IUnitOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        }
-
         public async Task<VehicleDto?> GetVehicleByIdAsync(Guid id)
         {
-            var vehicle = await _unitOfWork.Vehicles.GetByIdAsync(id);
-            return vehicle == null ? null : MapToVehicleDto(vehicle);
+            var vehicle = await unitOfWork.Vehicles.GetByIdAsync(id);
+            return mapper.Map<VehicleDto?>(vehicle);
         }
 
         public async Task<VehicleDto?> GetVehicleByVinAsync(string vin)
         {
-            var vehicle = await _unitOfWork.Vehicles.GetByVinAsync(vin);
-            return vehicle == null ? null : MapToVehicleDto(vehicle);
+            var vehicle = await unitOfWork.Vehicles.GetByVinAsync(vin);
+            return mapper.Map<VehicleDto?>(vehicle);
         }
 
         public async Task<IEnumerable<VehicleDto>> GetAllVehiclesAsync()
         {
-            var vehicles = await _unitOfWork.Vehicles.ListAllAsync();
-            return vehicles.Select(MapToVehicleDto).ToList();
+            var vehicles = await unitOfWork.Vehicles.ListAllAsync();
+            return mapper.Map<IEnumerable<VehicleDto>>(vehicles);
         }
 
         public async Task<VehicleDto> CreateVehicleAsync(CreateVehicleRequest request)
         {
             var basePrice = new Money(request.BasePriceAmount, request.BasePriceCurrency);
-            
+
             var vehicle = Vehicle.RegisterNew(
                 request.Vin,
                 request.Manufacturer,
@@ -58,16 +46,16 @@ namespace VehicleService.Application.Services
                 basePriceCurrency: basePrice.Currency
             );
 
-            await _unitOfWork.Vehicles.AddAsync(vehicle);
-            await _unitOfWork.SaveChangesAsync();
+            await unitOfWork.Vehicles.AddAsync(vehicle);
+            await unitOfWork.SaveChangesAsync();
 
-            return MapToVehicleDto(vehicle);
+            return mapper.Map<VehicleDto>(vehicle);
         }
 
-        
+
         public async Task SetVehicleStatusAsync(Guid id, VehicleStatus newStatus)
         {
-            var vehicle = await _unitOfWork.Vehicles.GetByIdAsync(id);
+            var vehicle = await unitOfWork.Vehicles.GetByIdAsync(id);
             if (vehicle == null)
             {
                 throw new KeyNotFoundException($"Vehicle with id {id} not found.");
@@ -85,44 +73,45 @@ namespace VehicleService.Application.Services
                     vehicle.SetAvailableStatus();
                     break;
                 default:
-                    vehicle.UpdateStatus(newStatus); 
+                    vehicle.UpdateStatus(newStatus);
                     break;
             }
-            
-            _unitOfWork.Vehicles.Update(vehicle);
-            await _unitOfWork.SaveChangesAsync();
+
+            unitOfWork.Vehicles.Update(vehicle);
+            await unitOfWork.SaveChangesAsync();
         }
 
         public async Task DeleteVehicleAsync(Guid id)
         {
-            var vehicle = await _unitOfWork.Vehicles.GetByIdAsync(id);
+            var vehicle = await unitOfWork.Vehicles.GetByIdAsync(id);
             if (vehicle != null)
             {
-                _unitOfWork.Vehicles.Delete(vehicle);
-                await _unitOfWork.SaveChangesAsync();
+                unitOfWork.Vehicles.Delete(vehicle);
+                await unitOfWork.SaveChangesAsync();
             }
         }
-
-        private VehicleDto MapToVehicleDto(Vehicle vehicle)
+        
+    public async Task PatchVehicleAsync(Guid id, PatchVehicleRequest request)
+    {
+        var vehicle = await unitOfWork.Vehicles.GetByIdAsync(id);
+        if (vehicle == null)
         {
-            return new VehicleDto(
-                vehicle.Id,
-                vehicle.Vin,
-                vehicle.Manufacturer,
-                vehicle.Model,
-                vehicle.Package,
-                vehicle.BodyType,
-                vehicle.Year,
-                vehicle.Color,
-                vehicle.EngineType.ToString(),
-                vehicle.TransmissionType.ToString(),
-                vehicle.Mileage,
-                vehicle.BasePrice.Amount,
-                vehicle.BasePrice.Currency,
-                vehicle.Status.ToString(),
-                vehicle.CreatedAt,
-                vehicle.UpdatedAt
-            );
+            throw new KeyNotFoundException($"Vehicle with id {id} not found.");
         }
+ 
+        if (request.Color != null) vehicle.UpdateColor(request.Color);
+        if (request.Year.HasValue) vehicle.UpdateYear(request.Year.Value);
+        if (request.Mileage.HasValue) vehicle.UpdateMileage(request.Mileage.Value);
+        
+        if (request.BasePriceAmount.HasValue && request.BasePriceCurrency != null)
+        {
+            var newPrice = new Money(request.BasePriceAmount.Value, request.BasePriceCurrency);
+            vehicle.UpdateBasePrice(newPrice);
+        }
+        
+        unitOfWork.Vehicles.Update(vehicle);
+        await unitOfWork.SaveChangesAsync();
+    }
+    
     }
 }

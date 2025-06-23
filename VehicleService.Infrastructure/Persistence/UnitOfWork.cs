@@ -4,26 +4,21 @@ using VehicleService.Infrastructure.Persistence.Repositories;
 
 namespace VehicleService.Infrastructure.Persistence
 {
-public class UnitOfWork : IUnitOfWork
+public class UnitOfWork(VehicleDbContext dbContext) : IUnitOfWork
 {
-    private readonly VehicleDbContext _dbContext;
-    private IVehicleRepository? _vehicles;
+    private readonly VehicleDbContext dbContext = dbContext;
+    private IVehicleRepository? vehicles;
 
-    public UnitOfWork(VehicleDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
-
-    public IVehicleRepository Vehicles => _vehicles ??= new VehicleRepository(_dbContext);
+    public IVehicleRepository Vehicles => vehicles ??= new VehicleRepository(dbContext);
 
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        return _dbContext.SaveChangesAsync(cancellationToken);
+        return dbContext.SaveChangesAsync(cancellationToken);
     }
 
     public void Dispose()
     {
-        _dbContext.Dispose();
+        dbContext.Dispose();
         GC.SuppressFinalize(this);
     }
 }

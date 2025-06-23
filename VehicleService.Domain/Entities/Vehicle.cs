@@ -1,4 +1,3 @@
-using System;
 using VehicleService.Domain.Enums;
 using VehicleService.Domain.Common;
 using VehicleService.Domain.ValueObjects;
@@ -133,9 +132,27 @@ namespace VehicleService.Domain.Entities
             Status = VehicleStatus.Available;
         }
 
-        public void UpdateBasePrice(Money newPrice) 
+        public void UpdateBasePrice(Money newPrice)
         {
             BasePrice = newPrice;
+        }
+        
+        public void UpdateColor(string newColor)
+        {
+            Guard.AgainstNullOrWhiteSpace(newColor);
+            Color = newColor;
+        }
+
+        public void UpdateMileage(int newMileage)
+        {
+            Guard.AgainstNegative(newMileage);
+            Mileage = newMileage;
+        }
+
+        public void UpdateYear(int newYear)
+        {
+            Guard.AgainstOutOfRange(newYear, 1886, DateTime.UtcNow.Year + 2);
+            Year = newYear;
         }
     }
 }

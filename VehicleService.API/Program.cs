@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using VehicleService.API.Middleware;
 using VehicleService.Application;
 using VehicleService.Infrastructure;
 using VehicleService.Infrastructure.Persistence;
@@ -18,6 +19,8 @@ builder.Services.AddSwaggerGen();
 
 
 var app = builder.Build();
+
+app.UseCustomExceptionHandler();
 
 if (app.Environment.IsDevelopment())
 {

@@ -1,7 +1,5 @@
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using VehicleService.Application.Interfaces; 
 using VehicleService.Application.Vehicles.Dtos;
 
@@ -9,21 +7,15 @@ namespace VehicleService.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class VehiclesController : ControllerBase
+    public class VehiclesController(IVehicleApplicationService vehicleService) : ControllerBase
     {
-        private readonly IVehicleApplicationService _vehicleService;
-
-        public VehiclesController(IVehicleApplicationService vehicleService)
-        {
-            _vehicleService = vehicleService ?? throw new ArgumentNullException(nameof(vehicleService));
-        }
-
+        
         [HttpGet("{id:guid}")]
         [ProducesResponseType(typeof(VehicleDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetVehicleById(Guid id)
         {
-            var vehicleDto = await _vehicleService.GetVehicleByIdAsync(id);
+            var vehicleDto = await vehicleService.GetVehicleByIdAsync(id);
             if (vehicleDto == null)
             {
                 return NotFound();
@@ -40,7 +32,8 @@ namespace VehicleService.API.Controllers
             {
                 return BadRequest("VIN cannot be empty.");
             }
-            var vehicleDto = await _vehicleService.GetVehicleByVinAsync(vin);
+            
+            var vehicleDto = await vehicleService.GetVehicleByVinAsync(vin);
             if (vehicleDto == null)
             {
                 return NotFound();
@@ -52,7 +45,7 @@ namespace VehicleService.API.Controllers
         [ProducesResponseType(typeof(IEnumerable<VehicleDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllVehicles()
         {
-            var vehicles = await _vehicleService.GetAllVehiclesAsync();
+            var vehicles = await vehicleService.GetAllVehiclesAsync();
             return Ok(vehicles);
         }
 
@@ -70,15 +63,24 @@ namespace VehicleService.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            try
+            var createdVehicleDto = await vehicleService.CreateVehicleAsync(request);
+            return CreatedAtAction(nameof(GetVehicleById), new { id = createdVehicleDto.Id }, createdVehicleDto);
+            
+        }
+
+        [HttpPatch("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> PatchVehicle(Guid id, [FromBody] PatchVehicleRequest request)
+        {
+            if (request == null)
             {
-                var createdVehicleDto = await _vehicleService.CreateVehicleAsync(request);
-                return CreatedAtAction(nameof(GetVehicleById), new { id = createdVehicleDto.Id }, createdVehicleDto);
+                return BadRequest("Request body cannot be null.");
             }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+
+            await vehicleService.PatchVehicleAsync(id, request);
+            return NoContent();
         }
 
         [HttpPut("{id:guid}/status")]
@@ -96,19 +98,8 @@ namespace VehicleService.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            try
-            {
-                await _vehicleService.SetVehicleStatusAsync(id, request.NewStatus);
-                return NoContent();
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await vehicleService.SetVehicleStatusAsync(id, request.NewStatus);
+            return NoContent();
         }
 
         [HttpDelete("{id:guid}")]
@@ -116,15 +107,8 @@ namespace VehicleService.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteVehicle(Guid id)
         {
-            try
-            {
-                await _vehicleService.DeleteVehicleAsync(id);
-                return NoContent();
-            }
-            catch (KeyNotFoundException ex)
-            {
-                 return NotFound(ex.Message);
-            }
+            await vehicleService.DeleteVehicleAsync(id);
+            return NoContent();
         }
     }
 }

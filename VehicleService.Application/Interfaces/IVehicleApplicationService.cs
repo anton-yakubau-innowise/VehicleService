@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using VehicleService.Application.Vehicles.Dtos;
 
 namespace VehicleService.Application.Interfaces
@@ -13,5 +10,6 @@ namespace VehicleService.Application.Interfaces
         Task<VehicleDto> CreateVehicleAsync(CreateVehicleRequest createRequest);
         Task SetVehicleStatusAsync(Guid id, Domain.Enums.VehicleStatus newStatus);
         Task DeleteVehicleAsync(Guid id);
+        Task PatchVehicleAsync(Guid id, PatchVehicleRequest request);
     }
 }
