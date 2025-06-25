@@ -76,8 +76,7 @@ namespace VehicleService.Application.Services
                     vehicle.UpdateStatus(newStatus);
                     break;
             }
-
-            unitOfWork.Vehicles.Update(vehicle);
+            
             await unitOfWork.SaveChangesAsync();
         }
 
@@ -109,7 +108,6 @@ namespace VehicleService.Application.Services
             vehicle.UpdateBasePrice(newPrice);
         }
         
-        unitOfWork.Vehicles.Update(vehicle);
         await unitOfWork.SaveChangesAsync();
     }
     

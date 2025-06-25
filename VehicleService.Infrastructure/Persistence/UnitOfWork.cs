@@ -6,7 +6,6 @@ namespace VehicleService.Infrastructure.Persistence
 {
 public class UnitOfWork(VehicleDbContext dbContext) : IUnitOfWork
 {
-    private readonly VehicleDbContext dbContext = dbContext;
     private IVehicleRepository? vehicles;
 
     public IVehicleRepository Vehicles => vehicles ??= new VehicleRepository(dbContext);

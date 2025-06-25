@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using VehicleService.Application.Interfaces; 
 using VehicleService.Application.Vehicles.Dtos;
@@ -7,7 +6,7 @@ namespace VehicleService.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class VehiclesController(IVehicleApplicationService vehicleService) : ControllerBase
+    public class VehiclesController(IVehicleApplicationService vehicleService) : CustomControllerBase
     {
         
         [HttpGet("{id:guid}")]
@@ -16,11 +15,7 @@ namespace VehicleService.API.Controllers
         public async Task<IActionResult> GetVehicleById(Guid id)
         {
             var vehicleDto = await vehicleService.GetVehicleByIdAsync(id);
-            if (vehicleDto == null)
-            {
-                return NotFound();
-            }
-            return Ok(vehicleDto);
+            return HandleVehicleDto(vehicleDto);
         }
 
         [HttpGet("vin/{vin}")]
@@ -34,11 +29,7 @@ namespace VehicleService.API.Controllers
             }
             
             var vehicleDto = await vehicleService.GetVehicleByVinAsync(vin);
-            if (vehicleDto == null)
-            {
-                return NotFound();
-            }
-            return Ok(vehicleDto);
+            return HandleVehicleDto(vehicleDto);
         }
 
         [HttpGet]

@@ -11,7 +11,6 @@ namespace VehicleService.Domain.Repositories
         Task<IEnumerable<Vehicle>> ListAsync(Expression<Func<Vehicle, bool>> predicate, CancellationToken cancellationToken = default);
         
         Task AddAsync(Vehicle vehicle, CancellationToken cancellationToken = default);
-        void Update(Vehicle vehicle);
         void Delete(Vehicle vehicle);
     }
 }

@@ -38,11 +38,6 @@ namespace VehicleService.Infrastructure.Persistence.Repositories
             await dbContext.Vehicles.AddAsync(vehicle, cancellationToken);
         }
 
-        public void Update(Vehicle vehicle)
-        {
-            dbContext.Entry(vehicle).State = EntityState.Modified;
-        }
-
         public void Delete(Vehicle vehicle)
         {
             dbContext.Vehicles.Remove(vehicle);
