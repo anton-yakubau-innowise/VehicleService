@@ -11,3 +11,7 @@ VehicleService
 ├── VehicleService.Infrastructure
 └── VehicleService.API      
 ```
+
+## URL
+
+http://localhost:5002/swagger/
