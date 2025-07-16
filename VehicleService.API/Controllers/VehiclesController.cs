@@ -49,11 +49,7 @@ namespace VehicleService.API.Controllers
             {
                 return BadRequest("Vehicle creation request cannot be null.");
             }
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
+            
             var createdVehicleDto = await vehicleService.CreateVehicleAsync(request);
             return CreatedAtAction(nameof(GetVehicleById), new { id = createdVehicleDto.Id }, createdVehicleDto);
             

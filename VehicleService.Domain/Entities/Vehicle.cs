@@ -32,50 +32,7 @@ namespace VehicleService.Domain.Entities
             BasePrice = null!;
         }
 
-        private Vehicle(
-            Guid id,
-            string vin,
-            string manufacturer,
-            string model,
-            string package,
-            string bodyType,
-            int year,
-            string color,
-            EngineType engineType,
-            TransmissionType transmissionType,
-            int mileage,
-            Money basePrice)
-        {
-            Guard.AgainstEmptyGuid(id);
-            Guard.AgainstNullOrWhiteSpace(vin);
-            Guard.AgainstStringLength(vin, 17);
-            Guard.AgainstNullOrWhiteSpace(manufacturer);
-            Guard.AgainstNullOrWhiteSpace(model);
-            Guard.AgainstNullOrWhiteSpace(package);
-            Guard.AgainstNullOrWhiteSpace(bodyType);
-            Guard.AgainstOutOfRange(year, 1886, DateTime.UtcNow.Year + 2);
-            Guard.AgainstNullOrWhiteSpace(color);
-            Guard.AgainstNegative(mileage);
-
-            Id = id;
-            Vin = vin.ToUpperInvariant();
-            Manufacturer = manufacturer;
-            Model = model;
-            Package = package;
-            BodyType = bodyType;
-            Year = year;
-            Color = color;
-            EngineType = engineType;
-            TransmissionType = transmissionType;
-            Mileage = mileage;
-            BasePrice = basePrice;
-
-            Status = VehicleStatus.Available;
-            CreatedAt = DateTime.UtcNow;
-            UpdatedAt = CreatedAt;
-        }
-
-        public static Vehicle RegisterNew(
+        public static Vehicle RegisterNewVehicle(
             string vin,
             string manufacturer,
             string model,
@@ -89,21 +46,40 @@ namespace VehicleService.Domain.Entities
             decimal basePriceAmount,
             string basePriceCurrency)
         {
-            var newId = Guid.NewGuid();
+
+            Guard.AgainstNullOrWhiteSpace(vin);
+            Guard.AgainstStringLength(vin, 17);
+            Guard.AgainstNullOrWhiteSpace(manufacturer);
+            Guard.AgainstNullOrWhiteSpace(model);
+            Guard.AgainstNullOrWhiteSpace(package);
+            Guard.AgainstNullOrWhiteSpace(bodyType);
+            Guard.AgainstOutOfRange(year, 1886, DateTime.UtcNow.Year + 2);
+            Guard.AgainstNullOrWhiteSpace(color);
+            Guard.AgainstNegative(initialMileage);
+            Guard.AgainstNegative(basePriceAmount);
+            Guard.AgainstInvalidCurrencyCodeFormat(basePriceCurrency);
+
             var basePrice = new Money(basePriceAmount, basePriceCurrency);
-            return new Vehicle(
-                newId,
-                vin,
-                manufacturer,
-                model,
-                package,
-                bodyType,
-                year,
-                color,
-                engineType,
-                transmissionType,
-                initialMileage,
-                basePrice);
+            
+            
+            return new Vehicle()
+            {
+                Id = Guid.NewGuid(),
+                Vin = vin.ToUpperInvariant(),
+                Manufacturer = manufacturer,
+                Model = model,
+                Package = package,
+                BodyType = bodyType,
+                Year = year,
+                Color = color,
+                EngineType = engineType,
+                TransmissionType = transmissionType,
+                Mileage = initialMileage,
+                BasePrice = basePrice,
+                Status = VehicleStatus.Available,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
         }
 
         public void UpdateStatus(VehicleStatus newStatus)

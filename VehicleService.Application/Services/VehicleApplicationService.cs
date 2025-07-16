@@ -31,7 +31,7 @@ namespace VehicleService.Application.Services
         {
             var basePrice = new Money(request.BasePriceAmount, request.BasePriceCurrency);
 
-            var vehicle = Vehicle.RegisterNew(
+            var vehicle = Vehicle.RegisterNewVehicle(
                 request.Vin,
                 request.Manufacturer,
                 request.Model,
@@ -83,11 +83,12 @@ namespace VehicleService.Application.Services
         public async Task DeleteVehicleAsync(Guid id)
         {
             var vehicle = await unitOfWork.Vehicles.GetByIdAsync(id);
-            if (vehicle != null)
+            if (vehicle == null)
             {
-                unitOfWork.Vehicles.Delete(vehicle);
-                await unitOfWork.SaveChangesAsync();
+                throw new KeyNotFoundException($"Vehicle with id {id} not found.");
             }
+            unitOfWork.Vehicles.Delete(vehicle);
+            await unitOfWork.SaveChangesAsync();
         }
         
     public async Task PatchVehicleAsync(Guid id, PatchVehicleRequest request)
