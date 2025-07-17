@@ -7,31 +7,54 @@ namespace VehicleService.Domain.Entities
     public class Vehicle
     {
         public Guid Id { get; private set; }
-        public string Vin { get; private set; }
-        public string Manufacturer { get; private set; }
-        public string Model { get; private set; }
-        public string Package { get; private set; }
-        public string BodyType { get; private set; }
+        public string Vin { get; private set; } = null!;
+        public string Manufacturer { get; private set; } = null!;
+        public string Model { get; private set; } = null!;
+        public string Package { get; private set; } = null!;
+        public string BodyType { get; private set; } = null!;
         public int Year { get; private set; }
-        public string Color { get; private set; }
+        public string Color { get; private set; } = null!;
         public EngineType EngineType { get; private set; }
         public TransmissionType TransmissionType { get; private set; }
         public int Mileage { get; private set; }
-        public Money BasePrice { get; private set; }
+        public Money BasePrice { get; private set; } = null!;
         public VehicleStatus Status { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; private set; }
         private Vehicle()
         {
-            Vin = string.Empty;
-            Manufacturer = string.Empty;
-            Model = string.Empty;
-            Package = string.Empty;
-            BodyType = string.Empty;
-            Color = string.Empty;
-            BasePrice = null!;
         }
 
+        private Vehicle(
+            string vin,
+            string manufacturer,
+            string model,
+            string package,
+            string bodyType,
+            int year,
+            string color,
+            EngineType engineType,
+            TransmissionType transmissionType,
+            int mileage,
+            Money basePrice)
+        {
+            Id = Guid.NewGuid();
+            Vin = vin.ToUpperInvariant();
+            Manufacturer = manufacturer;
+            Model = model;
+            Package = package;
+            BodyType = bodyType;
+            Year = year;
+            Color = color;
+            EngineType = engineType;
+            TransmissionType = transmissionType;
+            Mileage = mileage;
+            BasePrice = basePrice;
+            Status = VehicleStatus.Available;
+            CreatedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.UtcNow;
+        }
+        
         public static Vehicle RegisterNewVehicle(
             string vin,
             string manufacturer,
@@ -60,26 +83,20 @@ namespace VehicleService.Domain.Entities
             Guard.AgainstInvalidCurrencyCodeFormat(basePriceCurrency);
 
             var basePrice = new Money(basePriceAmount, basePriceCurrency);
-            
-            
-            return new Vehicle()
-            {
-                Id = Guid.NewGuid(),
-                Vin = vin.ToUpperInvariant(),
-                Manufacturer = manufacturer,
-                Model = model,
-                Package = package,
-                BodyType = bodyType,
-                Year = year,
-                Color = color,
-                EngineType = engineType,
-                TransmissionType = transmissionType,
-                Mileage = initialMileage,
-                BasePrice = basePrice,
-                Status = VehicleStatus.Available,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
-            };
+
+
+            return new Vehicle(
+                vin,
+                manufacturer,
+                model,
+                package,
+                bodyType,
+                year,
+                color,
+                engineType,
+                transmissionType,
+                initialMileage,
+                basePrice);
         }
 
         public void UpdateStatus(VehicleStatus newStatus)
