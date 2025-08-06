@@ -1,41 +1,61 @@
 using Microsoft.EntityFrameworkCore;
 using VehicleService.API.Middleware;
+using VehicleService.API;
 using VehicleService.Application;
 using VehicleService.Infrastructure;
 using VehicleService.Infrastructure.Persistence;
+using Serilog;
 
 
-var builder = WebApplication.CreateBuilder(args);
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateBootstrapLogger();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+Log.Information("Starting up application");
 
-builder.Services.AddInfrastructureServices(builder.Configuration);
-builder.Services.AddApplicationServices();   
-
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-
-
-var app = builder.Build();
-
-app.UseCustomExceptionHandler();
-
-if (app.Environment.IsDevelopment())
+try
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    var builder = WebApplication.CreateBuilder(args);
 
-    using (var scope = app.Services.CreateScope())
+    builder.Host.UseSerilog((context, services, configuration) => configuration
+        .ReadFrom.Configuration(context.Configuration)
+        .ReadFrom.Services(services)
+        .Enrich.FromLogContext());
+
+    builder.Services.AddApiServices();
+    builder.Services.AddInfrastructureServices(builder.Configuration);
+    builder.Services.AddApplicationServices();
+
+
+    var app = builder.Build();
+
+    app.UseSerilogRequestLogging();
+    app.UseCustomExceptionHandler();
+
+    if (app.Environment.IsDevelopment())
     {
-        var dbContext = scope.ServiceProvider.GetRequiredService<VehicleDbContext>();
-        dbContext.Database.Migrate();
+        app.UseSwagger();
+        app.UseSwaggerUI();
+
+        using (var scope = app.Services.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<VehicleDbContext>();
+            dbContext.Database.Migrate();
+        }
     }
+
+    app.UseAuthentication();
+    app.UseAuthorization();
+
+    app.MapControllers();
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Application terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
 }
 
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapControllers();
-app.Run();
