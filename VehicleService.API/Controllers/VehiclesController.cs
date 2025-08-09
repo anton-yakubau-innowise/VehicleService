@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using VehicleService.Application.Interfaces; 
 using VehicleService.Application.Vehicles.Dtos;
+using VehicleService.Domain.Enums;
 
 namespace VehicleService.API.Controllers
 {
@@ -16,54 +17,40 @@ namespace VehicleService.API.Controllers
         [HttpGet("{id:guid}")]
         [ProducesResponseType(typeof(VehicleDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetVehicleById(Guid id)
+        public async Task<IActionResult> GetVehicleById(Guid id, CancellationToken cancellationToken)
         {
-            logger.LogInformation("Attempting to get vehicle with ID: {id}", id);
-            var vehicleDto = await vehicleService.GetVehicleByIdAsync(id);
+            var vehicleDto = await vehicleService.GetVehicleByIdAsync(id, cancellationToken);
             return HandleSingleResult(vehicleDto);
         }
 
         [HttpGet("vin/{vin}")]
         [ProducesResponseType(typeof(VehicleDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetVehicleByVin(string vin)
+        public async Task<IActionResult> GetVehicleByVin(string vin, CancellationToken cancellationToken)
         {
-            logger.LogInformation("Attempting to get vehicle with VIN: {vin}", vin);
-            if (string.IsNullOrWhiteSpace(vin))
-            {
-                logger.LogWarning("Attempted to get vehicle with empty VIN.");
-                return BadRequest("VIN cannot be empty.");
-            }
-            
-            var vehicleDto = await vehicleService.GetVehicleByVinAsync(vin);
+            var vehicleDto = await vehicleService.GetVehicleByVinAsync(vin, cancellationToken);
             return HandleSingleResult(vehicleDto);
         }
 
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<VehicleDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAllVehicles()
+        public async Task<IActionResult> GetAllVehicles(CancellationToken cancellationToken)
         {
-            logger.LogInformation("Attempting to get all vehicles.");
-            var vehicles = await vehicleService.GetAllVehiclesAsync();
-
-            logger.LogInformation("Retrieved {VehicleCount} vehicles.", vehicles.Count());
+            var vehicles = await vehicleService.GetAllVehiclesAsync(cancellationToken);
             return Ok(vehicles);
         }
 
         [HttpPost]
         [ProducesResponseType(typeof(VehicleDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateVehicle([FromBody] CreateVehicleRequest request)
+        public async Task<IActionResult> CreateVehicle([FromBody] CreateVehicleRequest request, CancellationToken cancellationToken)
         {
-            logger.LogInformation("Attempting to create a new vehicle.");
             if (request == null)
             {
-                logger.LogWarning("Vehicle creation request is null.");
                 return BadRequest("Vehicle creation request cannot be null.");
             }
 
-            var createdVehicleDto = await vehicleService.CreateVehicleAsync(request);
-            logger.LogInformation("Vehicle created with ID: {VehicleId}", createdVehicleDto.Id);
+            var createdVehicleDto = await vehicleService.CreateVehicleAsync(request, cancellationToken);
             return CreatedAtAction(nameof(GetVehicleById), new { id = createdVehicleDto.Id }, createdVehicleDto);
 
         }
@@ -72,46 +59,50 @@ namespace VehicleService.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> PatchVehicle(Guid id, [FromBody] PatchVehicleRequest request)
+        public async Task<IActionResult> PatchVehicle(Guid id, [FromBody] PatchVehicleRequest request, CancellationToken cancellationToken)
         {
-            logger.LogInformation("Attempting to patch vehicle with ID: {id}", id);
             if (request == null)
             {
-                logger.LogWarning("Patch request body is null.");
                 return BadRequest("Request body cannot be null.");
             }
 
-            await vehicleService.PatchVehicleAsync(id, request);
-            logger.LogInformation("Vehicle with ID: {id} patched successfully.", id);
+            await vehicleService.PatchVehicleAsync(id, request, cancellationToken);
             return NoContent();
         }
 
-        [HttpPut("{id:guid}/status")]
+        [HttpPut("{id:guid}/status/sold")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> SetVehicleStatus(Guid id, [FromBody] SetVehicleStatusRequest request)
+        public async Task<IActionResult> SetVehicleStatusToSold(Guid id, CancellationToken cancellationToken)
         {
-            logger.LogInformation("Attempting to set status for vehicle with ID: {id}", id);
-            if (request == null)
-            {
-                logger.LogWarning("SetVehicleStatus request body is null.");
-                return BadRequest("Request body cannot be null.");
-            }
+            await vehicleService.SellVehicleAsync(id, cancellationToken);
+            return NoContent();
+        }
 
-            await vehicleService.SetVehicleStatusAsync(id, request.NewStatus);
-            logger.LogInformation("Vehicle with ID: {id} status set to {NewStatus}.", id, request.NewStatus);
+        [HttpPut("{id:guid}/status/reserved")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> SetVehicleStatusToReserved(Guid id, CancellationToken cancellationToken)
+        {
+            await vehicleService.ReserveVehicleAsync(id, cancellationToken);
+            return NoContent();
+        }
+
+        [HttpPut("{id:guid}/status/available")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> SetVehicleStatusToAvailable(Guid id, CancellationToken cancellationToken)
+        {
+            await vehicleService.MakeVehicleAvailableAsync(id, cancellationToken);
             return NoContent();
         }
 
         [HttpDelete("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteVehicle(Guid id)
+        public async Task<IActionResult> DeleteVehicle(Guid id, CancellationToken cancellationToken)
         {
-            logger.LogInformation("Attempting to delete vehicle with ID: {id}", id);
-            await vehicleService.DeleteVehicleAsync(id);
-            logger.LogInformation("Vehicle with ID: {id} deleted successfully.", id);
+            await vehicleService.DeleteVehicleAsync(id, cancellationToken);
             return NoContent();
         }
     }

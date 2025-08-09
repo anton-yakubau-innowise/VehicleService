@@ -102,6 +102,7 @@ namespace VehicleService.Domain.Entities
         public void UpdateStatus(VehicleStatus newStatus)
         {
             Status = newStatus;
+            SetUpdated();
         }
 
         public void SetReservedStatus()
@@ -109,6 +110,7 @@ namespace VehicleService.Domain.Entities
             if (Status != VehicleStatus.Available)
                 throw new InvalidOperationException($"Cannot reserve vehicle with status {Status}. Vehicle must be Available.");
             Status = VehicleStatus.Reserved;
+            SetUpdated();
         }
 
         public void SetSoldStatus()
@@ -116,6 +118,7 @@ namespace VehicleService.Domain.Entities
             if (Status != VehicleStatus.Available && Status != VehicleStatus.Reserved)
                 throw new InvalidOperationException($"Cannot sell vehicle with status {Status}. Vehicle must be Available or Reserved.");
             Status = VehicleStatus.Sold;
+            SetUpdated();
         }
 
         public void SetAvailableStatus()
@@ -123,29 +126,69 @@ namespace VehicleService.Domain.Entities
             if (Status == VehicleStatus.Sold)
                 throw new InvalidOperationException("Cannot make a Sold vehicle Available without a specific return process.");
             Status = VehicleStatus.Available;
+            SetUpdated();
         }
 
         public void UpdateBasePrice(Money newPrice)
         {
+            Guard.AgainstNull(newPrice);
+            Guard.AgainstNegative(newPrice.Amount);
+            Guard.AgainstInvalidCurrencyCodeFormat(newPrice.Currency);
             BasePrice = newPrice;
+            SetUpdated();
         }
-        
+
         public void UpdateColor(string newColor)
         {
             Guard.AgainstNullOrWhiteSpace(newColor);
             Color = newColor;
+            SetUpdated();
         }
 
         public void UpdateMileage(int newMileage)
         {
             Guard.AgainstNegative(newMileage);
             Mileage = newMileage;
+            SetUpdated();
         }
 
         public void UpdateYear(int newYear)
         {
             Guard.AgainstOutOfRange(newYear, 1886, DateTime.UtcNow.Year + 2);
             Year = newYear;
+            SetUpdated();
+        }
+
+        public void UpdateDetails(
+            string? newColor = null,
+            int? newYear = null,
+            int? newMileage = null,
+            Money? newBasePrice = null)
+        {
+            if (newColor is not null)
+            {
+                UpdateColor(newColor);
+            }
+
+            if (newYear is not null)
+            {
+                UpdateYear(newYear.Value);
+            }
+
+            if (newMileage is not null)
+            {
+                UpdateMileage(newMileage.Value);
+            }
+
+            if (newBasePrice is not null)
+            {
+                UpdateBasePrice(newBasePrice);
+            }
+        }
+
+        private void SetUpdated()
+        {
+            UpdatedAt = DateTime.UtcNow;
         }
     }
 }

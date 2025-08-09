@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using VehicleService.Application.Vehicles.Dtos;
 
 namespace VehicleService.API.Controllers
 {
@@ -11,7 +10,6 @@ namespace VehicleService.API.Controllers
         {
             if (result is null)
             {
-                logger.LogWarning("Resource of type {ResourceType} was not found.", typeof(T).Name);
                 return NotFound();
             }
 
