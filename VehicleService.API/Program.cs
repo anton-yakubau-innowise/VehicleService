@@ -5,6 +5,7 @@ using VehicleService.Application;
 using VehicleService.Infrastructure;
 using VehicleService.Infrastructure.Persistence;
 using Serilog;
+using VehicleService.API.Services;
 
 
 Log.Logger = new LoggerConfiguration()
@@ -22,6 +23,14 @@ try
         .ReadFrom.Services(services)
         .Enrich.FromLogContext());
 
+    builder.WebHost.ConfigureKestrel(options =>
+    {
+        options.ListenAnyIP(8080, listenOptions =>
+        {
+            listenOptions.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http2;
+        });
+    });
+
     builder.Services.AddApiServices();
     builder.Services.AddInfrastructureServices(builder.Configuration);
     builder.Services.AddApplicationServices();
@@ -31,6 +40,7 @@ try
 
     app.UseSerilogRequestLogging();
     app.UseCustomExceptionHandler();
+    app.MapGrpcService<VehicleGrpcService>();
 
     if (app.Environment.IsDevelopment())
     {

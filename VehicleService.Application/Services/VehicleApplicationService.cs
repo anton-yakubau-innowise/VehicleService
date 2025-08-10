@@ -2,7 +2,6 @@ using VehicleService.Application.Interfaces;
 using VehicleService.Application.Vehicles.Dtos;
 using VehicleService.Domain.Entities;
 using VehicleService.Domain.ValueObjects;
-using VehicleService.Domain.Enums;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
 using VehicleService.Domain.Common;

@@ -4,7 +4,7 @@ namespace VehicleService.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public abstract class CustomControllerBase(ILogger<CustomControllerBase> logger) : ControllerBase
+    public abstract class CustomControllerBase() : ControllerBase
     {
         protected IActionResult HandleSingleResult<T>(T? result) where T : class
         {

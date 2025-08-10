@@ -15,6 +15,7 @@ namespace VehicleService.API
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
             services.AddHttpContextAccessor();
+            services.AddGrpc();
 
             return services;
         }

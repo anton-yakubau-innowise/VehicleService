@@ -1,19 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using VehicleService.Application.Interfaces; 
 using VehicleService.Application.Vehicles.Dtos;
-using VehicleService.Domain.Enums;
 
 namespace VehicleService.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class VehiclesController(
-        IVehicleApplicationService vehicleService,
-        ILogger<VehiclesController> logger,
-        ILogger<CustomControllerBase> baseLogger
-    ) : CustomControllerBase(baseLogger)
+    public class VehiclesController(IVehicleApplicationService vehicleService) : CustomControllerBase
     {
-
         [HttpGet("{id:guid}")]
         [ProducesResponseType(typeof(VehicleDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
