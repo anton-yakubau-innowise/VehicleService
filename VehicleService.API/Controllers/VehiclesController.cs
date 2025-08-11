@@ -14,6 +14,10 @@ namespace VehicleService.API.Controllers
         public async Task<IActionResult> GetVehicleById(Guid id, CancellationToken cancellationToken)
         {
             var vehicleDto = await vehicleService.GetVehicleByIdAsync(id, cancellationToken);
+
+            if (vehicleDto is null)
+                return NotFound();
+                
             return HandleSingleResult(vehicleDto);
         }
 
@@ -23,6 +27,10 @@ namespace VehicleService.API.Controllers
         public async Task<IActionResult> GetVehicleByVin(string vin, CancellationToken cancellationToken)
         {
             var vehicleDto = await vehicleService.GetVehicleByVinAsync(vin, cancellationToken);
+
+            if (vehicleDto is null)
+                return NotFound();
+
             return HandleSingleResult(vehicleDto);
         }
 
