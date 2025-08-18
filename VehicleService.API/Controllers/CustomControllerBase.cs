@@ -4,15 +4,16 @@ namespace VehicleService.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public abstract class CustomControllerBase : ControllerBase
+    public abstract class CustomControllerBase() : ControllerBase
     {
-        protected IActionResult HandleVehicleDto<VehicleDto>(VehicleDto? vehicleDto) 
+        protected IActionResult HandleSingleResult<T>(T? result) where T : class
         {
-            if (vehicleDto is null)
+            if (result is null)
             {
                 return NotFound();
             }
-            return Ok(vehicleDto);
+
+            return Ok(result);
         }
     }
 }

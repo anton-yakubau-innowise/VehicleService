@@ -12,6 +12,13 @@ namespace VehicleService.Domain.Common
                 throw new ArgumentException("Identifier cannot be empty.", paramName);
             }
         }
+        public static void AgainstNull<T>(T? argument, [CallerArgumentExpression("argument")] string? paramName = null) where T : class
+        {
+            if (argument is null)
+            {
+                throw new ArgumentNullException(paramName, "Parameter cannot be null.");
+            }
+        }
 
         public static void AgainstNullOrWhiteSpace(string? argument, [CallerArgumentExpression("argument")] string? paramName = null)
         {
@@ -29,7 +36,7 @@ namespace VehicleService.Domain.Common
                 throw new ArgumentException($"Parameter must be exactly {exactLength} characters long.", paramName);
             }
         }
-        
+
         public static void AgainstOutOfRange(int argument, int min, int max, [CallerArgumentExpression("argument")] string? paramName = null)
         {
             if (argument < min || argument > max)
