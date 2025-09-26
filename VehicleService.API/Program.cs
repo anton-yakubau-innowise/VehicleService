@@ -6,6 +6,7 @@ using VehicleService.Infrastructure;
 using VehicleService.Infrastructure.Persistence;
 using Serilog;
 using VehicleService.API.Services;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 
 Log.Logger = new LoggerConfiguration()
@@ -27,7 +28,11 @@ try
     {
         options.ListenAnyIP(8080, listenOptions =>
         {
-            listenOptions.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http2;
+            listenOptions.Protocols = HttpProtocols.Http1;
+        });
+        options.ListenAnyIP(8081, listenOptions =>
+        {
+            listenOptions.Protocols = HttpProtocols.Http2;
         });
     });
 
