@@ -39,10 +39,22 @@ namespace VehicleService.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<uint>("DbDataVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
                     b.Property<string>("EngineType")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
+
+                    b.Property<decimal>("EngineVolume")
+                        .HasColumnType("numeric");
 
                     b.Property<string>("Manufacturer")
                         .IsRequired()
@@ -60,6 +72,9 @@ namespace VehicleService.Infrastructure.Migrations
                     b.Property<string>("Package")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("Power")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -90,6 +105,39 @@ namespace VehicleService.Infrastructure.Migrations
                     b.ToTable("Vehicles", (string)null);
                 });
 
+            modelBuilder.Entity("VehicleService.Domain.Entities.VehiclePhoto", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsPrimary")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("PhotoUrl")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)");
+
+                    b.Property<DateTime>("UploadedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("VehicleId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VehicleId");
+
+                    b.ToTable("VehiclePhoto", (string)null);
+                });
+
             modelBuilder.Entity("VehicleService.Domain.Entities.Vehicle", b =>
                 {
                     b.OwnsOne("VehicleService.Domain.ValueObjects.Money", "BasePrice", b1 =>
@@ -117,6 +165,22 @@ namespace VehicleService.Infrastructure.Migrations
 
                     b.Navigation("BasePrice")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("VehicleService.Domain.Entities.VehiclePhoto", b =>
+                {
+                    b.HasOne("VehicleService.Domain.Entities.Vehicle", "Vehicle")
+                        .WithMany("Photos")
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Vehicle");
+                });
+
+            modelBuilder.Entity("VehicleService.Domain.Entities.Vehicle", b =>
+                {
+                    b.Navigation("Photos");
                 });
 #pragma warning restore 612, 618
         }

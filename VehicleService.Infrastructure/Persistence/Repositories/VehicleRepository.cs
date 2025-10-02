@@ -10,6 +10,7 @@ namespace VehicleService.Infrastructure.Persistence.Repositories
         public async Task<Vehicle?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
             return await dbContext.Vehicles
+                                   .Include(v => v.Photos)
                                    .FirstOrDefaultAsync(v => v.Id == id, cancellationToken);
         }
 
@@ -17,12 +18,14 @@ namespace VehicleService.Infrastructure.Persistence.Repositories
         {
             var normalizedVin = vin.ToUpperInvariant();
             return await dbContext.Vehicles
+                                   .Include(v => v.Photos)
                                    .FirstOrDefaultAsync(v => v.Vin == normalizedVin, cancellationToken);
         }
 
         public async Task<IEnumerable<Vehicle>> ListAllAsync(CancellationToken cancellationToken = default)
         {
             return await dbContext.Vehicles
+                                   .Include(v => v.Photos)
                                    .ToListAsync(cancellationToken);
         }
 
@@ -30,6 +33,7 @@ namespace VehicleService.Infrastructure.Persistence.Repositories
         {
             return await dbContext.Vehicles
                                    .Where(predicate)
+                                   .Include(v => v.Photos)
                                    .ToListAsync(cancellationToken);
         }
 

@@ -13,5 +13,6 @@ namespace VehicleService.Application.Interfaces
         Task SellVehicleAsync(Guid id, CancellationToken cancellationToken = default);
         Task DeleteVehicleAsync(Guid id, CancellationToken cancellationToken = default);
         Task PatchVehicleAsync(Guid id, PatchVehicleRequest request, CancellationToken cancellationToken = default);
+        Task<VehicleDto> AddPhotoToVehicleAsync(Guid vehicleId, Stream photoStream, string fileName, string contentType, string? description, bool isPrimary, CancellationToken cancellationToken = default);
     }
 }

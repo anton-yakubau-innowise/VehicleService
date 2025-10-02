@@ -6,6 +6,7 @@ namespace VehicleService.Domain.Enums
         Diesel,
         Electric,
         Hybrid,
+        Gas, 
         Other
     }
 }

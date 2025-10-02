@@ -15,12 +15,20 @@ namespace VehicleService.Domain.Entities
         public int Year { get; private set; }
         public string Color { get; private set; } = null!;
         public EngineType EngineType { get; private set; }
+        public decimal EngineVolume { get; private set; }
+        public int Power { get; private set; }
         public TransmissionType TransmissionType { get; private set; }
         public int Mileage { get; private set; }
         public Money BasePrice { get; private set; } = null!;
         public VehicleStatus Status { get; private set; }
+        public string? Description { get; private set; } = null!;
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; private set; }
+        public uint DbDataVersion { get; private set; }
+
+        private readonly List<VehiclePhoto> _photos = new List<VehiclePhoto>();
+        public IReadOnlyCollection<VehiclePhoto> Photos => _photos.AsReadOnly();
+
         private Vehicle()
         {
         }
@@ -54,7 +62,7 @@ namespace VehicleService.Domain.Entities
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
         }
-        
+
         public static Vehicle RegisterNewVehicle(
             string vin,
             string manufacturer,
@@ -183,6 +191,63 @@ namespace VehicleService.Domain.Entities
             if (newBasePrice is not null)
             {
                 UpdateBasePrice(newBasePrice);
+            }
+        }
+        
+        public void AddPhoto(string photoUrl, string? description, bool isPrimary, int displayOrder)
+        {
+            Guard.AgainstNullOrWhiteSpace(photoUrl);
+
+            var newVehiclePhoto = VehiclePhoto.Create(this.Id, photoUrl, description, isPrimary, displayOrder);
+
+            if (isPrimary)
+            {
+                var currentPrimary = _photos.FirstOrDefault(p => p.IsPrimary);
+                if (currentPrimary != null)
+                {
+                    currentPrimary.SetAsPrimary(false);
+                }
+            }
+
+            _photos.Add(newVehiclePhoto);
+            SetUpdated();
+        }
+
+        public void SetPrimaryPhoto(Guid photoId)
+        {
+            var photoToSetAsPrimary = _photos.FirstOrDefault(p => p.Id == photoId);
+            if (photoToSetAsPrimary == null)
+            {
+                throw new InvalidOperationException("Photo to set as primary was not found in the vehicle's photo collection.");
+            }
+
+            var currentPrimary = _photos.FirstOrDefault(p => p.IsPrimary);
+            if (currentPrimary != null)
+            {
+                currentPrimary.SetAsPrimary(false);
+            }
+
+            photoToSetAsPrimary.SetAsPrimary(true);
+
+            SetUpdated();
+        }
+
+        public void RemovePhoto(Guid photoId)
+        {
+            var photoToRemove = _photos.FirstOrDefault(p => p.Id == photoId);
+            if (photoToRemove != null)
+            {
+                _photos.Remove(photoToRemove);
+                SetUpdated();
+            }
+        }
+
+        private void ClearCurrentPrimaryPhoto()
+        {
+            var currentPrimary = _photos.FirstOrDefault(p => p.IsPrimary);
+            if (currentPrimary != null)
+            {
+                currentPrimary.SetAsPrimary(false);
             }
         }
 

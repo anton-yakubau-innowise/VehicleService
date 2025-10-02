@@ -10,12 +10,16 @@ namespace VehicleService.Application.Vehicles.Dtos
         int Year,
         string Color,
         string EngineType,
+        decimal EngineVolume,
+        int Power,
         string TransmissionType,
         int Mileage,
         decimal BasePriceAmount,
         string BasePriceCurrency,
+        string Description,
         string Status,
         DateTime CreatedAt,
-        DateTime UpdatedAt
+        DateTime UpdatedAt,
+        List<VehiclePhotoDto> Photos
     );
 }

@@ -12,9 +12,12 @@ namespace VehicleService.Application.Vehicles.Dtos
         [Required] int Year,
         [Required] string Color,
         [Required] EngineType EngineType,
+        [Required] decimal EngineVolume,
+        [Required] int Power,
         [Required] TransmissionType TransmissionType,
         [Required] int InitialMileage,
         [Required] decimal BasePriceAmount,
-        [Required] string BasePriceCurrency
+        [Required] string BasePriceCurrency,
+        string Description
     );
 }

@@ -5,6 +5,7 @@ using VehicleService.Application.Interfaces;
 using VehicleService.Domain.Repositories;
 using VehicleService.Infrastructure.Persistence;
 using VehicleService.Infrastructure.Persistence.Repositories;
+using VehicleService.Infrastructure.Storage;
 
 namespace VehicleService.Infrastructure;
 
@@ -15,8 +16,11 @@ public static class InfrastructureServiceExtensions
         services.AddDbContext<VehicleDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
+        services.Configure<StorageSettings>(configuration.GetSection(StorageSettings.SectionName));
+
         services.AddScoped<IVehicleRepository, VehicleRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddSingleton<IFileStorageService, AzureBlobStorageService>();
 
         return services;
     }

@@ -6,15 +6,15 @@ namespace VehicleService.Domain.Entities
     {
         public Guid Id { get; private set; }
         public Guid VehicleId { get; private set; }
-        public string PhotoUrl { get; private set; } 
+        public string PhotoUrl { get; private set; } = null!;
         public string? Description { get; private set; }
         public bool IsPrimary { get; private set; }
         public int DisplayOrder { get; private set; }
+        public Vehicle Vehicle { get; private set; } = null!;
         public DateTime UploadedAt { get; private set; }
 
         private VehiclePhoto()
         {
-            PhotoUrl = string.Empty;
         }
 
         private VehiclePhoto(Guid id, Guid vehicleId, string photoUrl, string? description, bool isPrimary, int displayOrder)
@@ -32,8 +32,12 @@ namespace VehicleService.Domain.Entities
             UploadedAt = DateTime.UtcNow;
         }
 
-        public static VehiclePhoto AddPhoto
-        (Guid vehicleId, string photoUrl, string? description, bool isPrimary, int displayOrder)
+        public static VehiclePhoto Create(
+            Guid vehicleId,
+            string photoUrl,
+            string? description,
+            bool isPrimary,
+            int displayOrder)
         {
             return new VehiclePhoto(Guid.NewGuid(), vehicleId, photoUrl, description, isPrimary, displayOrder);
         }
@@ -47,7 +51,7 @@ namespace VehicleService.Domain.Entities
         {
             DisplayOrder = newOrder;
         }
-        
+
         public void UpdateDescription(string? newDescription)
         {
             Description = newDescription;

@@ -12,6 +12,7 @@ namespace VehicleService.Application.Mappings
                 .ForMember(dest => dest.BasePriceAmount, opt => opt.MapFrom(src => src.BasePrice.Amount))
                 .ForMember(dest => dest.BasePriceCurrency, opt => opt.MapFrom(src => src.BasePrice.Currency));
         
+            CreateMap<VehiclePhoto, VehiclePhotoDto>();
         }
     }
 }

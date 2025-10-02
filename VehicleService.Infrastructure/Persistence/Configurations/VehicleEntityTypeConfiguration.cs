@@ -8,9 +8,12 @@ namespace VehicleService.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Vehicle> builder)
         {
-            builder.ToTable("Vehicles"); 
+            builder.ToTable("Vehicles");
 
             builder.HasKey(v => v.Id);
+
+            builder.Property(v => v.DbDataVersion)
+                .IsRowVersion();
 
             builder.Property(v => v.Vin)
                 .IsRequired()
@@ -40,22 +43,22 @@ namespace VehicleService.Infrastructure.Persistence.Configurations
 
                 priceBuilder.Property(p => p.Amount)
                     .HasColumnName("BasePrice_Amount")
-                    .HasColumnType("numeric(19,4)") 
+                    .HasColumnType("numeric(19,4)")
                     .IsRequired();
 
                 priceBuilder.Property(p => p.Currency)
                     .HasColumnName("BasePrice_Currency")
-                    .HasMaxLength(3)  
+                    .HasMaxLength(3)
                     .IsRequired();
             });
 
-            // builder.HasMany(v => v.Photos)
-            //        .WithOne()
-            //        .HasForeignKey(p => p.VehicleId)
-            //        .OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(v => v.Photos)
+                .WithOne(p => p.Vehicle)
+                .HasForeignKey(p => p.VehicleId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            // var navigation = builder.Metadata.FindNavigation(nameof(Vehicle.Photos));
-            // navigation?.SetPropertyAccessMode(PropertyAccessMode.Field);
+            var navigation = builder.Metadata.FindNavigation(nameof(Vehicle.Photos));
+            navigation?.SetPropertyAccessMode(PropertyAccessMode.Field);
         }
     }
 }

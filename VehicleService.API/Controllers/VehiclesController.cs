@@ -107,5 +107,26 @@ namespace VehicleService.API.Controllers
             await vehicleService.DeleteVehicleAsync(id, cancellationToken);
             return NoContent();
         }
+        
+        [HttpPost("{id:guid}/photos")]
+        [ProducesResponseType(typeof(VehicleDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> AddPhoto(Guid id, [FromForm] AddPhotoRequest request, CancellationToken cancellationToken)
+        {
+            await using var photoStream = request.PhotoFile.OpenReadStream();
+
+            var updatedVehicleDto = await vehicleService.AddPhotoToVehicleAsync(
+                id,
+                photoStream,
+                request.PhotoFile.FileName,
+                request.PhotoFile.ContentType,
+                request.Description,
+                request.IsPrimary,
+                cancellationToken
+            );
+
+            return CreatedAtAction(nameof(GetVehicleById), new { id = updatedVehicleDto.Id }, updatedVehicleDto);
+        }
     }
 }

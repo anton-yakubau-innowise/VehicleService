@@ -8,7 +8,11 @@ using VehicleService.Domain.Common;
 
 namespace VehicleService.Application.Services
 {
-    public class VehicleApplicationService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<VehicleApplicationService> logger) : IVehicleApplicationService
+    public class VehicleApplicationService(
+        IUnitOfWork unitOfWork,
+        IFileStorageService fileStorageService,
+        IMapper mapper,
+        ILogger<VehicleApplicationService> logger) : IVehicleApplicationService
     {
 
         public async Task<VehicleDto?> GetVehicleByIdAsync(Guid id, CancellationToken cancellationToken = default)
@@ -142,6 +146,25 @@ namespace VehicleService.Application.Services
 
             await unitOfWork.SaveChangesAsync();
             logger.LogInformation("Vehicle with ID: {VehicleId} patched successfully", id);
+        }
+        
+        public async Task<VehicleDto> AddPhotoToVehicleAsync(Guid vehicleId, Stream photoStream, string fileName, string contentType, string? description, bool isPrimary, CancellationToken cancellationToken = default)
+        {
+            logger.LogInformation("Attempting to add photo to vehicle with ID {VehicleId}", vehicleId);
+
+            var vehicle = await GetVehicleAndEnsureExistsAsync(vehicleId, cancellationToken);
+
+            var photoUrl = await fileStorageService.UploadFileAsync(photoStream, fileName, contentType);
+            logger.LogDebug("Photo uploaded to storage with URL: {PhotoUrl}", photoUrl);
+
+            var newDisplayOrder = vehicle.Photos.Count;
+
+            vehicle.AddPhoto(photoUrl, description, isPrimary, newDisplayOrder);
+
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+            logger.LogInformation("Successfully added photo to vehicle with ID {VehicleId}", vehicleId);
+
+            return mapper.Map<VehicleDto>(vehicle);
         }
 
         private async Task<Vehicle> GetVehicleAndEnsureExistsAsync(Guid id, CancellationToken cancellationToken = default)
