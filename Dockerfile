@@ -22,6 +22,6 @@ RUN dotnet publish "VehicleService.API.csproj" -c Release -o /app/publish --no-r
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 
-COPY --from=build /src/VehicleService.API/app/publish .
+COPY --from=build /app/publish .
 
 ENTRYPOINT ["dotnet", "VehicleService.API.dll"]
