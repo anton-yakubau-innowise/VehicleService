@@ -8,8 +8,8 @@ namespace VehicleService.Infrastructure.Storage
 {
     public class AzureBlobStorageService(IOptions<StorageSettings> storageSettings, ILogger<AzureBlobStorageService> logger) : IFileStorageService
     {
-        private readonly StorageSettings _storageSettings = storageSettings.Value;
-        private readonly BlobServiceClient _blobServiceClient = new(storageSettings.Value.ConnectionString);
+        private readonly StorageSettings storageSettings = storageSettings.Value;
+        private readonly BlobServiceClient blobServiceClient = new(storageSettings.Value.ConnectionString);
 
         public async Task<string> UploadFileAsync(Stream fileStream, string fileName, string contentType)
         {
@@ -38,11 +38,11 @@ namespace VehicleService.Infrastructure.Storage
 
         private async Task<BlobContainerClient> GetContainerClientAsync()
         {
-            var containerClient = _blobServiceClient.GetBlobContainerClient(_storageSettings.ContainerName);
+            var containerClient = blobServiceClient.GetBlobContainerClient(storageSettings.ContainerName);
 
             await containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob);
             
-            logger.LogDebug("Blob container '{ContainerName}' is ready.", _storageSettings.ContainerName);
+            logger.LogDebug("Blob container '{ContainerName}' is ready.", storageSettings.ContainerName);
             
             return containerClient;
         }
