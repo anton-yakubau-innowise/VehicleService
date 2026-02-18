@@ -27,5 +27,6 @@
   <ItemGroup>
     <ProjectReference Include="..\VehicleService.Infrastructure\VehicleService.Infrastructure.csproj" />
     <Protobuf Include="Protos\vehicle.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\reserve_vehicle.proto" GrpcServices="Server" />
   </ItemGroup>
 </Project>

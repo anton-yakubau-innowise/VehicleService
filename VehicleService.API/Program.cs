@@ -28,11 +28,7 @@ try
     {
         options.ListenAnyIP(8080, listenOptions =>
         {
-            listenOptions.Protocols = HttpProtocols.Http1;
-        });
-        options.ListenAnyIP(8081, listenOptions =>
-        {
-            listenOptions.Protocols = HttpProtocols.Http2;
+            listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
         });
     });
 

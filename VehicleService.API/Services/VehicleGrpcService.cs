@@ -32,4 +32,27 @@ public class VehicleGrpcService(ILogger<VehicleGrpcService> logger, IVehicleRepo
             Currency = vehicle.BasePrice.Currency.ToString(),
         };
     }
+
+    public override async Task<ReserveVehicleResponse> ReserveVehicle(
+    ReserveVehicleRequest request, ServerCallContext context)
+    {
+        if (!Guid.TryParse(request.VehicleId, out var vehicleGuid))
+        {
+            throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid GUID format"));
+        }
+
+        var vehicle = await vehicleRepository.GetByIdAsync(vehicleGuid);
+
+        if (vehicle == null)
+        {
+            throw new RpcException(new Status(StatusCode.NotFound, $"Vehicle with id {request.VehicleId} not found"));
+        }
+
+        vehicle.SetReservedStatus();
+        
+        return new ReserveVehicleResponse
+        {
+            Succeed = true
+        };
+    }
 }
