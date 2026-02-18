@@ -1,10 +1,10 @@
 using Grpc.Core;
-using VehicleService.Domain.Repositories;
+using VehicleService.Application.Interfaces;
 using VehicleService.GRPC;
 
 namespace VehicleService.API.Services;
 
-public class VehicleGrpcService(ILogger<VehicleGrpcService> logger, IVehicleRepository vehicleRepository) : VehicleApi.VehicleApiBase
+public class VehicleGrpcService(ILogger<VehicleGrpcService> logger, IUnitOfWork unitOfWork) : VehicleApi.VehicleApiBase
 {
     public override async Task<VehicleDetailsResponse> GetVehicleDetails(
     GetVehicleDetailsRequest request, ServerCallContext context)
@@ -16,7 +16,7 @@ public class VehicleGrpcService(ILogger<VehicleGrpcService> logger, IVehicleRepo
             throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid GUID format"));
         }
 
-        var vehicle = await vehicleRepository.GetByIdAsync(vehicleGuid);
+        var vehicle = await unitOfWork.Vehicles.GetByIdAsync(vehicleGuid);
 
         if (vehicle == null)
         {
@@ -41,14 +41,23 @@ public class VehicleGrpcService(ILogger<VehicleGrpcService> logger, IVehicleRepo
             throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid GUID format"));
         }
 
-        var vehicle = await vehicleRepository.GetByIdAsync(vehicleGuid);
+        var vehicle = await unitOfWork.Vehicles.GetByIdAsync(vehicleGuid);
 
         if (vehicle == null)
         {
             throw new RpcException(new Status(StatusCode.NotFound, $"Vehicle with id {request.VehicleId} not found"));
         }
 
-        vehicle.SetReservedStatus();
+        try
+        {
+            vehicle.SetReservedStatus();
+            await unitOfWork.SaveChangesAsync();
+        }
+        catch (InvalidOperationException ex)
+        {
+            throw new RpcException(new Status(StatusCode.FailedPrecondition, ex.Message));
+        }
+
         
         return new ReserveVehicleResponse
         {
